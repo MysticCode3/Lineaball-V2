@@ -154,6 +154,25 @@ current_first_box_pos = -100
 second_pause_box_pos = screen_width / 2 - (screen_width / 15) / 2 + 79
 current_second_box_pos = screen_width + 100
 
+# Start Screen animation
+start_screen_pos = 0
+start_screen_txt_offset = 0
+
+# Optimizations
+# Start Screen
+font = pygame.font.SysFont("Bahnschrift", int(screen_width / 7))
+font_small = pygame.font.SysFont("Bahnschrift", int(screen_width / 30))
+font_back = pygame.font.SysFont("twcencondensedextra", int(screen_width / 11))
+font_small_2 = pygame.font.SysFont("twcencondensedextra", int(screen_width / 19))
+
+title_text = font.render("Lineaball", bool(1), (173, 216, 230))
+name = font_small_2.render("Rohan Saxena", bool(1), (173, 216, 230))
+how_to_play_button = font_back.render("How to Play", bool(1), (173, 216, 230))
+options_button = font_back.render("Settings", bool(1), (173, 216, 230))
+achievements_button = font_back.render("Achievements", bool(1), (173, 216, 230))
+stats_button = font_back.render("Stats", bool(1), (173, 216, 230))
+play_button = font.render("Play", bool(1), (173, 216, 230))
+high_score_txt = font_small_2.render(f"High Score: {high_score}", bool(1), (173, 216, 230))
 
 # Sound functions
 def play_sound(type_sound):
@@ -187,8 +206,6 @@ def draw_background():
     global b_animation_list
 
     s_2 = pygame.Surface((screen_width, screen_height))
-
-    draw_gradient(s_2, (28, 40, 97), (2, 7, 28))
 
     if not background_set:
         background_set = True
@@ -230,7 +247,7 @@ def draw_tutorial():
     global tutorial_active
 
     s = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
-    draw_gradient(s, (28, 40, 97), (2, 7, 28))
+    s.fill(bg_color)
     # pygame.draw.circle(s, (150, 150, 150), (mx, my), 7)
     # pygame.draw.circle(s, (150, 150, 150), (mx, my), 10, 1)
 
@@ -261,7 +278,7 @@ def draw_options():
     is_f_graphics = 0
 
     s = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
-    draw_gradient(s, (28, 40, 97), (2, 7, 28))
+    s.fill(bg_color)
     # pygame.draw.circle(s, (150, 150, 150), (mx, my), 7)
     # pygame.draw.circle(s, (150, 150, 150), (mx, my), 10, 1)
 
@@ -337,7 +354,7 @@ def draw_achievements():
         updated_stats = True
 
     s = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
-    draw_gradient(s, (28, 40, 97), (2, 7, 28))
+    s.fill(bg_color)
     # pygame.draw.circle(s, (150, 150, 150), (mx, my), 7)
     # pygame.draw.circle(s, (150, 150, 150), (mx, my), 10, 1)
 
@@ -396,7 +413,7 @@ def draw_stats():
     global line_stats, bounce_stats
 
     s = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
-    draw_gradient(s, (28, 40, 97), (2, 7, 28))
+    s.fill(bg_color)
     # pygame.draw.circle(s, (150, 150, 150), (mx, my), 7)
     # pygame.draw.circle(s, (150, 150, 150), (mx, my), 10, 1)
 
@@ -451,18 +468,6 @@ def draw_stats():
 
     screen.blit(s, (0, 0))
 
-def draw_gradient(screen, c1, c2):
-    for y in range(screen_height):
-        # Calculate the interpolation factor (0.0 to 1.0)
-        interp_factor = y / screen_height
-
-        # Interpolate the RGB values between pink and purple
-        r = int(c1[0] + (c2[0] - c1[0]) * interp_factor)
-        g = int(c1[1] + (c2[1] - c1[1]) * interp_factor)
-        b = int(c1[2] + (c2[2] - c1[2]) * interp_factor)
-
-        # Fill a horizontal line with the interpolated color
-        pygame.draw.line(screen, (r, g, b), (0, y), (screen_width, y))
 
 def draw_title():
     global sound
@@ -472,6 +477,9 @@ def draw_title():
     global achievements_menu
     global stats_menu
     global cx, cy
+    global start_screen_pos
+    global start_screen_txt_offset
+    global title_text, name, how_to_play_button, options_button, achievements_button, stats_button, play_button, high_score
 
     width_1 = int(screen_width * 0.7)
     height_1 = int(screen_height / 12)
@@ -487,103 +495,101 @@ def draw_title():
 
     if int(screen_width / 2) - int(width / 2) - offset_x + width > mx > int(screen_width / 2) - int(width / 2) - offset_x:
         if screen_height - offset_y - int(screen_height / 4.5) + height > my > screen_height - offset_y - int(screen_height / 4.5):
-            if sound:
-                sound = False
             width = int(screen_width * 0.75)
             height = int(screen_height / 11.5)
             offset_x = int(screen_width / 175)
             offset_y = 10
-        else:
-            sound = True
-    else:
-        sound = True
-
-    # Surface
-    s = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
-
-    # Screen
-    draw_gradient(s, (28, 40, 97), (2, 7, 28))
-    screen.blit(s, (0, 0))
-
-    # Fonts
-    # font = pygame.font.SysFont("bodoniblack", int(screen_width / 7))
-    font = pygame.font.Font("JosefinSans-Bold.ttf", int(screen_width / 15))
-    font.set_bold(True)
-    font_big = pygame.font.Font("JosefinSans-Bold.ttf", int(screen_width / 8))
-    font_big.set_bold(True)
-    font_small = pygame.font.SysFont("JosefinSans-Bold.ttf", int(screen_width / 20))
-
-    # Play button
-    play_button = font.render("START", bool(1), (11, 19, 54))
-    pygame.draw.rect(screen, (174, 201, 245), ((screen_width / 2 - play_button.get_width()*3 / 2, screen_height - int(screen_height / 5) - (play_button.get_height()*1.7)/4), (play_button.get_width()*3, play_button.get_height()*1.7)), 0, 40)
-    screen.blit(play_button, (screen_width / 2 - play_button.get_width() / 2, screen_height - int(screen_height / 5)))
-
-    # Title
-    title_text = font_big.render("LINEABALL", bool(1), (184, 225, 245))
-    screen.blit(title_text, (screen_width / 2 - title_text.get_width() / 2, int(screen_height / 5)))
-
-    # Name
-    name = font_small.render("ROHAN SAXENA", bool(1), (173, 216, 230))
-    screen.blit(name, (screen_width / 2 - name.get_width() / 2, int(screen_height / 1.1)))
-
-    # Tutorial button
-    how_to_play_button = font.render("HOW TO PLAY", bool(1), (11, 19, 54))
-    pygame.draw.rect(screen, (174, 201, 245), ((screen_width / 2 - play_button.get_width() * 3 / 2, screen_height - int(screen_height / 3.25) - how_to_play_button.get_height() * 1.7 / 4), (play_button.get_width() * 3, how_to_play_button.get_height() * 1.7)), 0, 40)
-    screen.blit(how_to_play_button, (screen_width / 2 - how_to_play_button.get_width() / 2, screen_height - int(screen_height / 3.25)))
-
-    # Settings button
-    options_button = font.render("SETTINGS", bool(1), (11, 19, 54))
-    pygame.draw.rect(screen, (174, 201, 245), ((screen_width / 2 - play_button.get_width() * 3 / 2, screen_height - int(screen_height / 2.42) - options_button.get_height() * 1.7 / 4), (play_button.get_width() * 3, options_button.get_height() * 1.7)), 0, 40)
-    screen.blit(options_button, (screen_width / 2 - options_button.get_width() / 2, screen_height - int(screen_height / 2.42)))
-
-    # Achievements button
-    achievements_button = font.render("ACHIEVEMENTS", bool(1), (11, 19, 54))
-    pygame.draw.rect(screen, (174, 201, 245), ((screen_width / 2 - play_button.get_width() * 3 / 2, screen_height - int(screen_height / 1.95) - achievements_button.get_height() * 1.7 / 4),(play_button.get_width() * 3, achievements_button.get_height() * 1.7)), 0, 40)
-    screen.blit(achievements_button, (screen_width / 2 - achievements_button.get_width() / 2, screen_height - int(screen_height / 1.95)))
-
-    # Stats button
-    stats_button = font.render("Stats", bool(1), (11, 19, 54))
-    pygame.draw.rect(screen, (174, 201, 245), ((screen_width / 2 - play_button.get_width() * 3 / 2, screen_height - int(screen_height / 1.63) - stats_button.get_height() * 1.7 / 4), (play_button.get_width() * 3, stats_button.get_height() * 1.7)), 0, 40)
-    screen.blit(stats_button, (screen_width / 2 - stats_button.get_width() / 2, screen_height - int(screen_height / 1.63)))
-
-    # High score text
-    high_score_txt = font_small.render(f"HIGH SCORE: {high_score}", bool(1), (173, 216, 230))
-    screen.blit(high_score_txt, (screen_width / 2 - high_score_txt.get_width() / 2, int(screen_height / 1.07)))
 
     if not tutorial_active and not options_menu and not achievements_menu and not stats_menu:
         # Play button
-        if screen_width / 2 - play_button.get_width()*3 / 2 < cx < screen_width / 2 - play_button.get_width()*3 / 2 + play_button.get_width() * 3:
-            if screen_height - int(screen_height / 5) < cy < screen_height - int(screen_height / 5) + play_button.get_height()*1.7:
-                start_screen = False
-                play_sound(click)
+        if int(screen_width / 2) - int(width / 2) - offset_x + width > cx > int(screen_width / 2) - int(width / 2) - offset_x:
+            if screen_height - offset_y - int(screen_height / 4.5) + height > cy > screen_height - offset_y - int(screen_height / 4.5):
+                if start_screen_pos <= -screen_height:
+                    start_screen = False
+                    play_sound(click)
+                else:
+                    start_screen_txt_offset -= start_screen_pos
+                    start_screen_pos -= abs((screen_height - start_screen_pos - 1)/8)
 
         # Tutorial button
-        if screen_width / 2 - play_button.get_width() * 3 / 2 < cx < screen_width / 2 - play_button.get_width() * 3 / 2 + play_button.get_width() * 3:
-            if screen_height - int(screen_height / 3.25) < cy < screen_height - int(screen_height / 3.25) + how_to_play_button.get_height() * 1.7:
+        if int(screen_width / 2) - int(width_2 / 2) + width_2 > cx > int(screen_width / 2) - int(width_2 / 2):
+            if screen_height - int(screen_height / 3) + height_2 > cy > screen_height - int(screen_height / 3):
                 cx, cy = -15, -15
                 tutorial_active = True
                 play_sound(click)
 
         # Options button
-        if screen_width / 2 - play_button.get_width() * 3 / 2 < cx < screen_width / 2 - play_button.get_width() * 3 / 2 + play_button.get_width() * 3:
-            if screen_height - int(screen_height / 2.42) < cy < screen_height - int(screen_height / 2.42) + options_button.get_height() * 1.7:
+        if int(screen_width / 2) - int(width_2 / 2) + width_2 > cx > int(screen_width / 2) - int(width_2 / 2):
+            if screen_height - int(screen_height / 2.3) + height_2 > cy > screen_height - int(screen_height / 2.3):
                 cx, cy = -15, -15
                 options_menu = True
                 play_sound(click)
 
         # Achievements button
-        if screen_width / 2 - play_button.get_width() * 3 / 2 < cx < screen_width / 2 - play_button.get_width() * 3 / 2 + play_button.get_width() * 3:
-            if screen_height - int(screen_height / 1.95) < cy < screen_height - int(screen_height / 1.95) + achievements_button.get_height() * 1.7:
+        if int(screen_width / 2) - int(width_2 / 2) + width_2 > cx > int(screen_width / 2) - int(width_2 / 2):
+            if screen_height - int(screen_height / 1.87) + height_2 > cy > screen_height - int(screen_height / 1.87):
                 cx, cy = -15, -15
                 achievements_menu = True
                 play_sound(click)
 
         # Stats button
-        if screen_width / 2 - play_button.get_width() * 3 / 2 < cx < screen_width / 2 - play_button.get_width() * 3 / 2 + play_button.get_width() * 3:
-            if screen_height - int(screen_height / 1.63) < cy < screen_height - int(screen_height / 1.63) + stats_button.get_height() * 1.7:
+        if int(screen_width / 2) - int(width_2 / 2) + width_2 > cx > int(screen_width / 2) - int(width_2 / 2):
+            if screen_height - int(screen_height / 1.58) + height_2 > cy > screen_height - int(screen_height / 1.58):
                 cx, cy = -15, -15
                 stats_menu = True
                 play_sound(click)
+
+    # Surface
+    s = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
+
+    # Update highscore
+    high_score_txt = font_small_2.render(f"High Score: {high_score}", bool(1), (173, 216, 230))
+
+    # Title(Lineaball)
+    pygame.draw.rect(s, (173, 216, 230), (int(screen_width / 2) - int(width_1 / 2), int(screen_height / 12), width_1, height_1), border_radius=40)
+
+    # Play
+    pygame.draw.rect(s, (129, 253, 129), (int(screen_width / 2) - int(width / 2) - offset_x, screen_height - offset_y - int(screen_height / 4.5), width, height), border_radius=40)
+
+    # Tutorial
+    pygame.draw.rect(s, (173, 216, 230), (int(screen_width / 2) - int(width_2 / 2), screen_height - int(screen_height / 3), width_2, height_2), border_radius=40)
+
+    # Options
+    pygame.draw.rect(s, (173, 216, 230), (int(screen_width / 2) - int(width_2 / 2), screen_height - int(screen_height / 2.3), width_2, height_2), border_radius=40)
+
+    # Achievements
+    pygame.draw.rect(s, (173, 216, 230), (int(screen_width / 2) - int(width_2 / 2), screen_height - int(screen_height / 1.87), width_2, height_2), border_radius=40)
+
+    # Stats
+    pygame.draw.rect(s, (173, 216, 230), (int(screen_width / 2) - int(width_2 / 2), screen_height - int(screen_height / 1.58), width_2, height_2), border_radius=40)
+
+    # Screen
+    s.set_alpha(128)
+    screen.blit(s, (0, start_screen_pos))
+
+    # Title
+    screen.blit(title_text, (screen_width / 2 - title_text.get_width() / 2, int(screen_height / 10) - start_screen_txt_offset))
+
+    # Name
+    screen.blit(name, (screen_width / 2 - name.get_width() / 2, int(screen_height / 1.1) - start_screen_txt_offset))
+
+    # Tutorial button
+    screen.blit(how_to_play_button, (screen_width / 2 - how_to_play_button.get_width() / 2, screen_height - int(screen_height / 3.2) - start_screen_txt_offset))
+
+    # Settings button
+    screen.blit(options_button, (screen_width / 2 - options_button.get_width() / 2, screen_height - int(screen_height / 2.42) - start_screen_txt_offset))
+
+    # Achievements button
+    screen.blit(achievements_button, (screen_width / 2 - achievements_button.get_width() / 2, screen_height - int(screen_height / 1.95) - start_screen_txt_offset))
+
+    # Stats button
+    screen.blit(stats_button, (screen_width / 2 - stats_button.get_width() / 2, screen_height - int(screen_height / 1.63) - start_screen_txt_offset))
+
+    # Play button
+    screen.blit(play_button, (screen_width / 2 - play_button.get_width() / 2, screen_height - int(screen_height / 5) - start_screen_txt_offset))
+
+    # High score text
+    screen.blit(high_score_txt, (screen_width / 2 - high_score_txt.get_width() / 2, int(screen_height / 1.07) - start_screen_txt_offset))
 
     # If statements to update states of different screens
     if tutorial_active:
@@ -598,6 +604,10 @@ def draw_title():
     if stats_menu:
         draw_stats()
 
+def score_animation():
+    global font
+
+    font = pygame.font.SysFont("twcencondensedextra", int(screen_width / 4))
 
 # Screenshake
 def apply_screenshake(si, sd, st):
@@ -674,12 +684,13 @@ def check_collision(a, b, c):
             if c[0] > a[0]:
                 if c[0] < b[0]:
                     points += 1
+                    score_animation()
                     add_ball_bounce_count()
                     apply_screenshake(2, 200, pygame.time.get_ticks())
                     try:
                         play_sound(ball_bounce)
                         if fancy_graphics:
-                            for i in range(0, 15):
+                            for i in range(15):
                                 # animation_list.append(Line_Animation.dot_anim(bx, by, (67, 84, 255), 0.01, 14))
                                 sparks.append(sparks_game.Spark([bx, by], math.radians(random.randint(0, 360)), random.randint(3, 6), blue, 2))
                                 sparks.append(sparks_game.Spark([bx, by], math.radians(random.randint(0, 360)), random.randint(3, 5), (175, 215, 215), 1))
@@ -693,13 +704,14 @@ def check_collision(a, b, c):
                         play_sound(ball_bounce)
                         apply_screenshake(2, 200, pygame.time.get_ticks())
                         if fancy_graphics:
-                            for i in range(0, 15):
+                            for i in range(15):
                                 # animation_list.append(Line_Animation.dot_anim(bx, by, (67, 84, 255), 0.01, 14))
                                 sparks.append(sparks_game.Spark([bx, by], math.radians(random.randint(0, 360)), random.randint(3, 6), blue, 2))
                                 sparks.append(sparks_game.Spark([bx, by], math.radians(random.randint(0, 360)), random.randint(3, 5), (175, 215, 215), 1))
                     except:
                         sparks.clear()
                     points += 1
+                    score_animation()
                     add_ball_bounce_count()
                     return True, opp_rec_glob + (slope_1 * 6)
 
@@ -737,7 +749,7 @@ def restart_game():
 # Usual Pygame Stuff
 pygame.display.set_caption('LineaBall')
 # pygame.display.set_icon(Logo)
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE, pygame.HWSURFACE)
 clock = pygame.time.Clock()
 
 # Initial positions for parallax effect
@@ -784,6 +796,9 @@ while True:
                                 (x2, y2) = (cx, cy)
                                 line_list.append(Line.LINE((x, y), (x2, y2)))
                                 (x, y) = (x2, y2)
+                                if fancy_graphics:
+                                    for i in range(15):
+                                        sparks.append(sparks_game.Spark([x2, y2], math.radians(random.randint(0, 360)), random.randint(3, 5), (175, 215, 215), 1))
                 if end:
                     restart_game()
         elif event.type == pygame.KEYDOWN:
@@ -797,18 +812,6 @@ while True:
 
     # Background
     screen.fill(bg_color)
-
-    """# Update layer positions based on speed
-    for i in range(len(layer_offsets)):
-        layer_offsets[i] += layer_speeds[i]
-        if layer_offsets[i] >= screen_height:
-            layer_offsets[i] = 0
-
-    if background_set and not end and game_start:
-        # Draw the background layers
-        pygame.draw.rect(screen, MEDIUM_BLUE, (0, layer_offsets[0], screen_width, screen_height))
-        pygame.draw.rect(screen, LIGHT_BLUE, (0, layer_offsets[1], screen_width, screen_height))
-        pygame.draw.rect(screen, DARK_BLUE, (0, layer_offsets[2], screen_width, screen_height))"""
 
     # Update screen shake
     if shake_intensity > 0:
@@ -994,6 +997,8 @@ while True:
                 cx, cy = 0, 0
                 play_sound(click)
                 start_screen = True
+                start_screen_pos = 0
+                start_screen_txt_offset = 0
                 restart_game()
     else:
         if tutorial_active or options_menu or achievements_menu or stats_menu:
@@ -1185,13 +1190,30 @@ while True:
     if shake_intensity > 0:
         screen.blit(screen, (shake_offset_x, shake_offset_y))
 
+    # Sine wave properties
+    amplitude = 50  # Amplitude of the sine wave
+    frequency = 0.01  # Frequency of the sine wave
+    speed_sin = 0.01  # Speed of the wave movement
+
+    if not start_screen:
+        # Draw the sine wave border
+        for x_sin in range(screen_width):
+            y_sin = screen_height // 2 + amplitude * math.sin(frequency * x_sin + speed_sin * pygame.time.get_ticks())
+            pygame.draw.circle(screen, (255, 140, 0), (x_sin, int(y_sin) + screen_height / 2), 50)
+        for x_sin in range(screen_width):
+            y_sin = screen_height // 2 + (amplitude-30) * math.sin(frequency * x_sin + speed_sin * pygame.time.get_ticks())
+            pygame.draw.circle(screen, (255, 213, 0), (x_sin+30, int(y_sin) + screen_height / 2 + 20), 50)
+        """for y_sin in range(screen_width):
+            x_sin = screen_height // 2 + amplitude * math.sin(frequency * y_sin + speed_sin * pygame.time.get_ticks())
+            pygame.draw.circle(screen, (20, 20, 20), (int(x_sin) - screen_width/1.2, y_sin + 100), 50)"""
+
     # FPS and DT
-    # fps = font_small.render(f"FPS: {round(clock.get_fps())}", True, (173, 216, 230))
+    fps = font_small.render(f"FPS: {round(clock.get_fps())}", True, (173, 216, 230))
     # dt = font_small.render(f"DT: {round(dt, 4)}", True, (173, 216, 230))
-    # screen.blit(fps, (3, 0))
-    # screen.blit(dt, (3, 20))
+    screen.blit(fps, (3, 40))
+    # screen.blit(dt, (3, 60))
     # soundAMNT = font_small.render(f"Sound: {len(active_sounds)}", True, (173, 216, 230))
     # screen.blit(soundAMNT, (3, 0))
 
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(120)
